@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:#07040a;color:white;font-family:"DM Mono",monospace}
+#game{position:relative;width:100%;height:100svh;overflow:hidden;background:#0b0710}
+canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+
+.hud{position:absolute;z-index:5;top:20px;left:22px;right:22px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.brand{font-size:10px;letter-spacing:.18em;color:#fff9}.brand span{color:#ff91ac;font-size:17px;margin-left:5px}
+.score-box{font-size:9px;letter-spacing:.12em;padding:9px 12px;border:1px solid #fff3;border-radius:30px;background:#09060c99;backdrop-filter:blur(8px)}
+.score-box b{color:#ffc1cc;margin-left:7px}
+
+.instructions{position:absolute;z-index:6;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,88vw);padding:38px 28px;text-align:center;border:1px solid #fff2;border-radius:25px;background:#100b1599;backdrop-filter:blur(18px);box-shadow:0 25px 80px #0009;transition:.5s}
+.instructions.hide{opacity:0;transform:translate(-50%,-46%);pointer-events:none}
+.mini-icon{font-size:42px;filter:drop-shadow(0 0 16px #ff7290)}
+.instructions h1{font:600 clamp(2.2rem,7vw,3.6rem)/.95 "Playfair Display";margin:12px 0}
+.instructions p{font-size:10px;line-height:1.8;color:#d9cdd3}
+button{font-family:inherit;cursor:pointer}
+#startBtn,#againBtn{margin-top:18px;border:1px solid #fff8;border-radius:40px;background:#fff;color:#3c1020;padding:13px 22px;font-size:10px;letter-spacing:.08em;transition:.25s}
+#startBtn:hover,#againBtn:hover{transform:translateY(-3px);box-shadow:0 10px 30px #ff739055}
+
+.power-wrap{position:absolute;z-index:5;bottom:26px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:10px;font-size:8px;color:#ffffff99;pointer-events:none}
+.power-wrap.show{display:flex}.power{width:130px;height:5px;border-radius:20px;background:#fff2;overflow:hidden}.power i{display:block;width:0;height:100%;background:#ff8ba5;box-shadow:0 0 12px #ff8ba5;transition:width .05s}
+
+.message{position:absolute;z-index:5;left:50%;top:80px;transform:translateX(-50%);font-size:10px;color:#ffc4ce;opacity:0;transition:.3s;white-space:nowrap;text-shadow:0 2px 12px #000}
+.message.show{opacity:1}
+
+.celebration{position:absolute;z-index:10;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 42%,#ff668c33,transparent 35%),#09040be8;opacity:0;visibility:hidden;transition:.8s}
+.celebration.show{opacity:1;visibility:visible}
+.celebrate-card{position:relative;width:min(520px,88vw);padding:35px 20px;text-align:center;transform:scale(.72) translateY(30px);transition:.8s cubic-bezier(.2,.9,.2,1)}
+.celebration.show .celebrate-card{transform:scale(1) translateY(0)}
+.sparkle{font-size:35px;color:#ffd38f;animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cake-big{font-size:85px;animation:float 2s ease-in-out infinite;filter:drop-shadow(0 12px 25px #ff648955)}
+@keyframes float{50%{transform:translateY(-9px) rotate(2deg)}}
+.eyebrow{font-size:9px;letter-spacing:.3em;color:#ffc1cd;margin-top:5px}
+.celebrate-card h2{font:600 clamp(4rem,13vw,7rem)/.76 "Playfair Display";margin:15px 0 12px;text-shadow:0 10px 40px #ff4e7433}
+.celebrate-card h2 em{color:#ff9db2}
+.name{font:italic 600 clamp(2rem,8vw,4rem) "Playfair Display";color:#ffd18e;text-transform:none}
+.celebrate-card p{font:10px/1.8 "DM Mono";color:#d7cbd0;margin-top:15px}
+
+.burst{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti{position:absolute;left:50%;top:48%;width:8px;height:14px;border-radius:2px;animation:confetti 2.1s cubic-bezier(.1,.7,.2,1) forwards}
+@keyframes confetti{
+  0%{transform:translate(-50%,-50%) rotate(0);opacity:1}
+  100%{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}
+}
+@media(max-width:600px){
+  .hud{top:14px;left:14px;right:14px}
+  .instructions{padding:30px 20px}
+  .power-wrap{bottom:17px}
+}

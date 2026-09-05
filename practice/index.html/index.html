@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>online banking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="login-box" id="loginBox">
+        <h2>Online Banking ni jazz</h2>
+
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+
+        <p id="message"></p>
+    </div>
+
+
+    <div class="bank-box" id="bankBox">
+
+        <h2>Welcome  <span id="user"></span></h2>
+
+        <h3>Your Balance</h3>
+        <h1>$<span id="balance">5000</span></h1>
+
+
+        <input type="number" id="amount" placeholder="Enter amount">
+
+
+        <button onclick="deposit()">Deposit</button>
+        <button onclick="withdraw()">Withdraw</button>
+
+
+        <p id="status"></p>
+
+        <button class="logout" onclick="logout()">Logout</button>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

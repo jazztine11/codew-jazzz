@@ -1,0 +1,23 @@
+.upper{
+    text-transform:uppercase ;
+}
+.lowercase{
+    text-transform: lowercase;
+}
+.capitalize{
+    text-transform: capitalize;
+}
+p{
+    text-shadow: 5px 5px 5px red;
+    text-align: justify;
+    white-space: pre;
+}
+h1{
+font-family: "Bebas Neue", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+
+
+    font-style: oblique;
+    font-variant: small-caps;
+}

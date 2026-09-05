@@ -1,0 +1,19 @@
+h1{
+    color: purple;
+    text-align: center;
+    white-space: pre;
+    font-size: 40px;
+}
+p{
+    white-space:pre;
+    font-family: cursive    ;
+    text-align: center;
+    background-color: aqua;
+    width: 600px;
+    height: 600px;
+    text-align: center;
+    margin:0px auto;
+}
+body{
+background-color: pink;
+}

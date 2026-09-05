@@ -1,0 +1,29 @@
+button{
+    background-color: tomato;
+       width: 80px;
+       height: 50px;
+}
+button:hover{
+    background-color: 2s;
+  transition:width 1s 2s;
+ transition:height 1s 2s;
+ width: 100px;
+  height: 150px;
+    background-color: blue; 
+    color: aqua;
+}
+button:active{
+    background-color: black;
+}
+#password:focus{
+border: 2px solid pink;
+outline: none;
+background-color:blue;
+color: white;
+}
+
+#check:checked{
+    scale:2;
+    background-color: red;
+    color: red;
+}

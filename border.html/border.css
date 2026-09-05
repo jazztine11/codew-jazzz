@@ -1,0 +1,12 @@
+h1{
+    padding: 10px;
+    border-width: 10px 20px 30px 40px;
+    border-style: solid dotted inset outset;
+    border color: black;
+    background-color: aqua;
+    border-radius:100px;
+}
+body{
+margin:0px;
+
+}

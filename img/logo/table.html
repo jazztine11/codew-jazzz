@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>table</title>
+    <style>
+        table,tr,th,td{
+            border-color: black;
+            border-style: solid;
+            border-width: 1px;
+            caption{
+                text-align: left;
+                caption-side: top;
+                color:brown
+            }
+           
+        }
+        thead{
+            background-color: yellow;
+            color:green
+        }
+        tfoot{
+            background-color: aqua;
+        }
+        tbody{
+        background-color: blueviolet;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <table>
+        <caption>1st sem grade</caption>
+        <thead>
+<tr>
+
+<th rowspan="2">name</th>
+<th colspan="2">subject</th>
+
+</tr>
+
+
+<tr>
+<td>c++</td>
+<td>java</td>
+
+</tr>
+</thead>
+
+<tbody>
+<tr>
+    <td>jazzz</td>
+<td>92</td>
+<td>94</td>
+    </tr>
+<tr>
+    <td>mark</td>
+    <td>88</td>
+    <td>90</td>
+</tr>
+</tbody>
+<tfoot>
+    <tr>
+        <td colspan="3">demo row</td>
+    </tr>
+</tfoot>
+
+
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+body {
+    background: linear-gradient(120deg,#06f111,#00ccff);
+    font-family: Arial;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+
+.container {
+    width:350px;
+}
+
+
+.login-box,
+.bank-box {
+
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 5px 20px #333;
+}
+
+
+input {
+
+    width:90%;
+    padding:12px;
+    margin:10px;
+    border-radius:5px;
+    border:1px solid gray;
+
+}
+
+
+button {
+
+    width:95%;
+    padding:12px;
+    margin:5px;
+    background:#0066ff;
+    color:white;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+
+}
+
+
+button:hover {
+
+    background:#0de230;
+
+}
+
+
+.bank-box {
+
+    display:none;
+
+}
+
+
+.logout {
+
+    background:rgb(21, 255, 0);
+
+}
+
+
+#status {
+
+    color:green;
+
+}

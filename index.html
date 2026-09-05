@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Birthday Cake Archery 🎂🏹</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game">
+    <canvas id="canvas"></canvas>
+
+    <div class="hud">
+      <div class="brand">BIRTHDAY QUEST <span>♡</span></div>
+      <div class="score-box">ARROWS <b id="arrows">5</b></div>
+    </div>
+
+    <div class="instructions" id="instructions">
+      <div class="mini-icon">🏹</div>
+      <h1>Hit the Birthday Cake</h1>
+      <p>Aim with your mouse or finger.<br>Release to shoot the arrow.</p>
+      <button id="startBtn">START GAME</button>
+    </div>
+
+    <div class="power-wrap" id="powerWrap">
+      <span>POWER</span>
+      <div class="power"><i id="power"></i></div>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <div class="celebration" id="celebration">
+      <div class="burst" id="burst"></div>
+      <div class="celebrate-card">
+        <div class="sparkle">✦</div>
+        <div class="cake-big">🎂</div>
+        <div class="eyebrow">YOU DID IT!</div>
+        <h2>HAPPY<br><em>BIRTHDAY!</em></h2>
+        <div class="name" id="birthdayName">HER NAME</div>
+        <p>May your day be filled with<br>beautiful surprises & happy memories. ♡</p>
+        <button id="againBtn">PLAY AGAIN ↻</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

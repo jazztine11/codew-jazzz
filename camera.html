@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Hand Gesture Particle Control</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: Arial, sans-serif;
+        }
+
+        #webcam {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 180px;
+            height: 135px;
+            border: 2px solid #00ffcc;
+            border-radius: 8px;
+            transform: scaleX(-1);
+            z-index: 10;
+            background-color: #111;
+        }
+
+        #error-msg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff4444;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            display: none;
+            text-align: center;
+            z-index: 100;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<div id="error-msg">
+    ⚠️ Kamera tidak terdeteksi atau izin akses kamera ditolak!<br>
+    Mohon izinkan akses kamera pada browser Anda.
+</div>
+
+<video id="webcam" autoplay playsinline muted></video>
+
+<script>
+
+const PARTICLE_COUNT = 8000;
+
+let scene, camera, renderer, particles, geometry;
+
+let currentPositions = new Float32Array(PARTICLE_COUNT * 3);
+let targetPositions = new Float32Array(PARTICLE_COUNT * 3);
+
+let currentColors = new Float32Array(PARTICLE_COUNT * 3);
+let targetColors = new Float32Array(PARTICLE_COUNT * 3);
+
+let activeShapeIndex = 0;
+
+
+/* =========================================================
+   RANDOM PARTICLE CLOUD
+========================================================= */
+
+function getCloudPositions() {
+
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        pos[i * 3] =
+            (Math.random() - 0.5) * 15;
+
+        pos[i * 3 + 1] =
+            (Math.random() - 0.5) * 15;
+
+        pos[i * 3 + 2] =
+            (Math.random() - 0.5) * 15;
+    }
+
+    return pos;
+}
+
+
+/* =========================================================
+   HAPPY BIRTHDAY TEXT
+========================================================= */
+
+function getHappyBirthdayPositions() {
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 900;
+    canvas.height = 220;
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 85px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText("HAPPY BIRTHDAY", 450, 105);
+
+    ctx.font = "bold 55px Arial";
+    ctx.fillText("🎉", 450, 180);
+
+    const imgData =
+        ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    const validPixels = [];
+
+    for (let y = 0; y < canvas.height; y += 2) {
+
+        for (let x = 0; x < canvas.width; x += 2) {
+
+            const index =
+                (y * canvas.width + x) * 4;
+
+            if (imgData.data[index] > 128) {
+
+                validPixels.push({
+                    x: (x - canvas.width / 2) * 0.025,
+                    y: -(y - canvas.height / 2) * 0.025
+                });
+            }
+        }
+    }
+
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        const pt =
+            validPixels[i % validPixels.length];
+
+        pos[i * 3] =
+            pt.x + (Math.random() - 0.5) * 0.03;
+
+        pos[i * 3 + 1] =
+            pt.y + (Math.random() - 0.5) * 0.03;
+
+        pos[i * 3 + 2] =
+            (Math.random() - 0.5) * 0.1;
+    }
+
+    return pos;
+}
+
+
+/* =========================================================
+   "AYING" TEXT
+========================================================= */
+
+function getAyingPositions() {
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = 600;
+    canvas.height = 180;
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "white";
+    ctx.font = "bold 100px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText("AYING", 300, 115);
+
+    const imgData =
+        ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    const validPixels = [];
+
+    for (let y = 0; y < canvas.height; y += 2) {
+
+        for (let x = 0; x < canvas.width; x += 2) {
+
+            const index =
+                (y * canvas.width + x) * 4;
+
+            if (imgData.data[index] > 128) {
+
+                validPixels.push({
+                    x: (x - canvas.width / 2) * 0.035,
+                    y: -(y - canvas.height / 2) * 0.035
+                });
+            }
+        }
+    }
+
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        const pt =
+            validPixels[i % validPixels.length];
+
+        pos[i * 3] =
+            pt.x + (Math.random() - 0.5) * 0.03;
+
+        pos[i * 3 + 1] =
+            pt.y + (Math.random() - 0.5) * 0.03;
+
+        pos[i * 3 + 2] =
+            (Math.random() - 0.5) * 0.1;
+    }
+
+    return pos;
+}
+
+
+/* =========================================================
+   PARTICLE BURST
+========================================================= */
+
+function getParticlePositions() {
+
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        const radius =
+            2 + Math.random() * 6;
+
+        const theta =
+            Math.random() * Math.PI * 2;
+
+        const phi =
+            Math.acos(2 * Math.random() - 1);
+
+        pos[i * 3] =
+            radius *
+            Math.sin(phi) *
+            Math.cos(theta);
+
+        pos[i * 3 + 1] =
+            radius *
+            Math.sin(phi) *
+            Math.sin(theta);
+
+        pos[i * 3 + 2] =
+            radius *
+            Math.cos(phi);
+    }
+
+    return pos;
+}
+
+
+/* =========================================================
+   CAKE SHAPE
+========================================================= */
+
+function getCakePositions() {
+
+    const pos = new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        /*
+            Cake body
+        */
+
+        if (i < PARTICLE_COUNT * 0.60) {
+
+            const x =
+                (Math.random() - 0.5) * 6;
+
+            const y =
+                (Math.random() - 0.5) * 3;
+
+            const z =
+                (Math.random() - 0.5) * 2.8;
+
+            pos[i * 3] = x;
+            pos[i * 3 + 1] = y - 1;
+            pos[i * 3 + 2] = z;
+
+        }
+
+        /*
+            Cake frosting
+        */
+
+        else if (i < PARTICLE_COUNT * 0.78) {
+
+            const angle =
+                Math.random() * Math.PI * 2;
+
+            const radius =
+                Math.random() * 3;
+
+            pos[i * 3] =
+                Math.cos(angle) * radius;
+
+            pos[i * 3 + 1] =
+                0.8 + Math.random() * 0.5;
+
+            pos[i * 3 + 2] =
+                Math.sin(angle) * radius * 0.45;
+        }
+
+        /*
+            Candles
+        */
+
+        else {
+
+            const candleX =
+                [-2, -1, 0, 1, 2][
+                    Math.floor(Math.random() * 5)
+                ];
+
+            pos[i * 3] =
+                candleX + (Math.random() - 0.5) * 0.3;
+
+            pos[i * 3 + 1] =
+                1 + Math.random() * 2.8;
+
+            pos[i * 3 + 2] =
+                (Math.random() - 0.5) * 0.3;
+        }
+    }
+
+    return pos;
+}
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+function getCloudColors() {
+
+    const col =
+        new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        col[i * 3] =
+            0.2 + Math.random() * 0.8;
+
+        col[i * 3 + 1] =
+            0.2 + Math.random() * 0.8;
+
+        col[i * 3 + 2] =
+            0.5 + Math.random() * 0.5;
+    }
+
+    return col;
+}
+
+
+function getHappyBirthdayColors() {
+
+    const col =
+        new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        const color =
+            Math.random();
+
+        if (color < 0.33) {
+
+            col[i * 3] = 1;
+            col[i * 3 + 1] = 0.2;
+            col[i * 3 + 2] = 0.4;
+
+        } else if (color < 0.66) {
+
+            col[i * 3] = 1;
+            col[i * 3 + 1] = 0.8;
+            col[i * 3 + 2] = 0.1;
+
+        } else {
+
+            col[i * 3] = 0.2;
+            col[i * 3 + 1] = 0.9;
+            col[i * 3 + 2] = 1;
+        }
+    }
+
+    return col;
+}
+
+
+function getAyingColors() {
+
+    const col =
+        new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        col[i * 3] = 0.8;
+        col[i * 3 + 1] = 0.2;
+        col[i * 3 + 2] = 1;
+    }
+
+    return col;
+}
+
+
+function getParticleColors() {
+
+    const col =
+        new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        col[i * 3] =
+            0.2 + Math.random() * 0.8;
+
+        col[i * 3 + 1] =
+            0.5 + Math.random() * 0.5;
+
+        col[i * 3 + 2] = 1;
+    }
+
+    return col;
+}
+
+
+function getCakeColors() {
+
+    const col =
+        new Float32Array(PARTICLE_COUNT * 3);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+
+        /*
+            Pink / red / yellow cake particles
+        */
+
+        const color =
+            Math.random();
+
+        if (color < 0.35) {
+
+            col[i * 3] = 1;
+            col[i * 3 + 1] = 0.25;
+            col[i * 3 + 2] = 0.55;
+
+        } else if (color < 0.70) {
+
+            col[i * 3] = 1;
+            col[i * 3 + 1] = 0.65;
+            col[i * 3 + 2] = 0.8;
+
+        } else {
+
+            col[i * 3] = 1;
+            col[i * 3 + 1] = 0.85;
+            col[i * 3 + 2] = 0.1;
+        }
+    }
+
+    return col;
+}
+
+
+/* =========================================================
+   CREATE SHAPES
+========================================================= */
+
+const shapes = [
+
+    // 0 = Open hand
+    getHappyBirthdayPositions(),
+
+    // 1 = Fist
+    getAyingPositions(),
+
+    // 2 = One finger
+    getParticlePositions(),
+
+    // 3 = Two fingers
+    getCakePositions()
+
+];
+
+
+const shapeColors = [
+
+    getHappyBirthdayColors(),
+    getAyingColors(),
+    getParticleColors(),
+    getCakeColors()
+
+];
+
+
+/* =========================================================
+   THREE.JS
+========================================================= */
+
+function initThreeJS() {
+
+    scene = new THREE.Scene();
+
+    camera =
+        new THREE.PerspectiveCamera(
+            60,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+
+    camera.position.z = 12;
+
+
+    renderer =
+        new THREE.WebGLRenderer({
+            antialias: true
+        });
+
+    renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+    );
+
+    document.body.appendChild(
+        renderer.domElement
+    );
+
+
+    geometry =
+        new THREE.BufferGeometry();
+
+
+    const initialPos =
+        shapes[0];
+
+    const initialCol =
+        shapeColors[0];
+
+
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT * 3;
+        i++
+    ) {
+
+        currentPositions[i] =
+            initialPos[i];
+
+        targetPositions[i] =
+            initialPos[i];
+
+        currentColors[i] =
+            initialCol[i];
+
+        targetColors[i] =
+            initialCol[i];
+    }
+
+
+    geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            currentPositions,
+            3
+        )
+    );
+
+
+    geometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(
+            currentColors,
+            3
+        )
+    );
+
+
+    const material =
+        new THREE.PointsMaterial({
+
+            size: 0.06,
+
+            vertexColors: true,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            transparent: true,
+
+            opacity: 0.9
+        });
+
+
+    particles =
+        new THREE.Points(
+            geometry,
+            material
+        );
+
+
+    scene.add(particles);
+
+
+    window.addEventListener(
+        "resize",
+        onWindowResize
+    );
+
+
+    animate();
+}
+
+
+/* =========================================================
+   CHANGE SHAPE
+========================================================= */
+
+function setShape(shapeIndex) {
+
+    if (
+        activeShapeIndex === shapeIndex
+    ) {
+        return;
+    }
+
+    activeShapeIndex =
+        shapeIndex;
+
+
+    const targetPos =
+        shapes[shapeIndex];
+
+    const targetCol =
+        shapeColors[shapeIndex];
+
+
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT * 3;
+        i++
+    ) {
+
+        targetPositions[i] =
+            targetPos[i];
+
+        targetColors[i] =
+            targetCol[i];
+    }
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+
+    const positions =
+        geometry.attributes.position.array;
+
+    const colorsAttr =
+        geometry.attributes.color.array;
+
+
+    for (
+        let i = 0;
+        i < PARTICLE_COUNT * 3;
+        i++
+    ) {
+
+        positions[i] +=
+            (targetPositions[i] - positions[i])
+            * 0.1;
+
+        colorsAttr[i] +=
+            (targetColors[i] - colorsAttr[i])
+            * 0.1;
+    }
+
+
+    geometry.attributes.position.needsUpdate =
+        true;
+
+    geometry.attributes.color.needsUpdate =
+        true;
+
+
+    /*
+        Different animation for each state
+    */
+
+    if (activeShapeIndex === 0) {
+
+        // Happy Birthday
+        particles.rotation.y += 0.002;
+
+        particles.rotation.x =
+            THREE.MathUtils.lerp(
+                particles.rotation.x,
+                0,
+                0.1
+            );
+
+    } else if (activeShapeIndex === 1) {
+
+        // AYING
+        particles.rotation.y =
+            THREE.MathUtils.lerp(
+                particles.rotation.y,
+                0,
+                0.1
+            );
+
+    } else if (
