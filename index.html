@@ -150,14 +150,21 @@
             canvas.width = 600;
             canvas.height = 220;
 
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'white';
-            ctx.font="700 56px Poppins";
-            ctx.textAlign = 'center';
-            ctx.fillText("HAPPY BIRTHDAY",300,55);
-            ctx.font="900 85px Playfair Display";
-ctx.fillText("AYING",300,120); ctx.font="700 60px Poppins"; ctx.fillText("20 YRS 🎂",300,185);
+           ctx.fillStyle = "white";
+ctx.textAlign = "center";
+
+// Top text
+ctx.font = "700 42px Poppins";
+ctx.fillText("HAPPY 20TH BIRTHDAY", 300, 45);
+
+// Name (main focus)
+ctx.font = "900 92px Playfair Display";
+ctx.fillText("AYING", 300, 120);
+
+// Bottom text
+ctx.font = "600 34px Poppins";
+ctx.fillStyle = "#FFD700"; // Gold
+ctx.fillText("✨ Wishing You the Best ✨", 300, 180);
 
             const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const validPixels = [];
